@@ -2,10 +2,19 @@ version: '3'
 
 services:
   db:
-    container_name: postgres-shopping-list
+    container_name: shopping-list-db
     image: postgres:latest
     restart: always
     ports:
       - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  test-db:
+    container_name: shopping-list-test-db
+    image: postgres:latest
+    restart: always
+    ports:
+      - '5433:5432'
     environment:
       - POSTGRES_PASSWORD=postgres
