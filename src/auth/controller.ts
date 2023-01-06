@@ -1,18 +1,21 @@
-import { NextFunction, Request, Response } from 'express';
+import { Router, NextFunction, Request, Response } from 'express';
+
+import { CreateUserDto } from '../users/dto';
 import { usersService } from '../users/service';
+import { validationMiddleware } from '../middleware/validation';
 
-export const authController = {
-  async login(req: Request, res: Response) {
-    res.send('to do');
-  },
-  async register(req: Request, res: Response, next: NextFunction) {
+export const authRouter = Router();
+
+authRouter.post(
+  '/register',
+  validationMiddleware(CreateUserDto),
+  async function register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, password } = req.body;
-      const user = await usersService.createUser({ email, password });
-
+      const createUserDto: CreateUserDto = req.body;
+      const user = await usersService.createUser(createUserDto);
       res.json({ id: user.id });
     } catch (error) {
       next(error);
     }
   },
-};
+);

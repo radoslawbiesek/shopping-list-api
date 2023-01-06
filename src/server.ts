@@ -1,8 +1,8 @@
 import express from 'express';
 
-import { authRouter } from './auth/router';
+import { authRouter } from './auth/controller';
 import { config } from './config';
-import { errorHandler } from './utils/error-handler';
+import { errorMiddleware } from './middleware/error';
 
 export function startServer() {
   const app = express();
@@ -11,7 +11,7 @@ export function startServer() {
 
   app.use('/auth', authRouter);
 
-  app.use(errorHandler);
+  app.use(errorMiddleware);
 
   app.listen(config.port, () => {
     console.log(`Server is running at https://localhost:${config.port}`);
