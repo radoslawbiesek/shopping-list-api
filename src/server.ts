@@ -1,11 +1,12 @@
 import express, { Request, Response } from 'express';
+import { Server } from 'http';
 
 import { authRouter } from './auth/controller';
 import { authenticate } from './auth/middleware';
 import { config } from './config';
 import { errorMiddleware } from './middleware/error';
 
-export function startServer() {
+export function startServer(): Server {
   const app = express();
 
   app.use(express.json());
@@ -21,7 +22,11 @@ export function startServer() {
 
   app.use(errorMiddleware);
 
-  app.listen(config.port, () => {
-    console.log(`Server is running at https://localhost:${config.port}`);
+  const server = app.listen(config.port, () => {
+    if (config.env === 'development') {
+      console.log(`Server is running at https://localhost:${config.port}`);
+    }
   });
+
+  return server;
 }

@@ -23,7 +23,6 @@ async function create(data: {
     `INSERT INTO users (email, password, created_on) VALUES ($1, $2, NOW()) RETURNING *`,
     [email, password],
   );
-  console.log(response);
 
   return response.rows[0];
 }
