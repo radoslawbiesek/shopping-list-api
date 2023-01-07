@@ -4,7 +4,7 @@ import { AxiosInstance } from 'axios';
 
 import { startServer } from '../server';
 import { createAuthenticatedClient } from './utils/client';
-import { deleteMockedCategories, mockCategory, mockUser } from './utils/mock';
+import { clearMockedCategories, mockCategory, mockUser } from './utils/mock';
 import { User } from '../users/repository';
 import { Category } from '../categories/repository';
 
@@ -18,11 +18,12 @@ beforeAll(async () => {
   client = await createAuthenticatedClient(user);
 });
 
-afterEach(async () => {
-  await deleteMockedCategories();
+beforeEach(async () => {
+  await clearMockedCategories();
 });
 
-afterAll(() => {
+afterAll(async () => {
+  await clearMockedCategories();
   server.close();
 });
 
@@ -36,7 +37,21 @@ describe('[Categories] - /category', () => {
         const response = await client.get(endpoint);
         expect(response.status).toBe(200);
         expect(response.data.length).toBe(3);
-        expect(response.data.map((c: Category) => c.name)).toEqual(names);
+        expect(response.data.map((c: Category) => c.name)).toEqual(expect.arrayContaining(names));
+      });
+
+      it('listing only user categories', async () => {
+        const names = ['test1', 'test2', 'test3'];
+        await Promise.all(names.map((name) => mockCategory(user.user_id, { name })));
+
+        const otherUser = await mockUser();
+        const otherNames = ['test4', 'test5'];
+        await Promise.all(otherNames.map((name) => mockCategory(otherUser.user_id, { name })));
+
+        const response = await client.get(endpoint);
+        expect(response.status).toBe(200);
+        expect(response.data.length).toBe(3);
+        expect(response.data.map((c: Category) => c.name)).toEqual(expect.arrayContaining(names));
       });
     });
     describe('Create [POST /category]', () => {

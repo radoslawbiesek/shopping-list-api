@@ -31,6 +31,6 @@ export function mockCategory(
   return categoriesRepository.createCategory(createCategoryDto);
 }
 
-export async function deleteMockedCategories() {
+export async function clearMockedCategories() {
   await pool.query(`DELETE FROM categories`);
 }
