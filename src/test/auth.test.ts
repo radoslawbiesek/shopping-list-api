@@ -39,9 +39,7 @@ describe('[Auth] - /auth', () => {
         })
         .catch((e) => e.response);
       expect(loginError.status).toBe(400);
-      expect(loginError.data.message).toBe(
-        'No active account found with the given credentials.',
-      );
+      expect(loginError.data.message).toBe('No active account found with the given credentials.');
 
       // Login
       const loginResult = await client.post('/auth/login', {
@@ -88,9 +86,7 @@ describe('[Auth] - /auth', () => {
           'password must not be too long',
           { ...data, password: longPassword },
           {
-            password: [
-              'password must be shorter than or equal to 16 characters',
-            ],
+            password: ['password must be shorter than or equal to 16 characters'],
           },
         ],
         [
@@ -124,15 +120,11 @@ describe('[Auth] - /auth', () => {
           'username must not be too long',
           { ...data, username: longUsername },
           {
-            username: [
-              'username must be shorter than or equal to 25 characters',
-            ],
+            username: ['username must be shorter than or equal to 25 characters'],
           },
         ],
       ])('%s', async (_title, payload, errors) => {
-        const error = await client
-          .post('/auth/register', payload)
-          .catch((e) => e.response);
+        const error = await client.post('/auth/register', payload).catch((e) => e.response);
         expect(error.status).toBe(400);
         expect(error.data.message).toBe('Invalid data');
         expect(error.data.details).toEqual(errors);
@@ -170,20 +162,10 @@ describe('[Auth] - /auth', () => {
       const password = faker.internet.password();
 
       it.each([
-        [
-          'password is required',
-          { email },
-          { password: ['password should not be empty'] },
-        ],
-        [
-          'email is required',
-          { password },
-          { email: ['email should not be empty'] },
-        ],
+        ['password is required', { email }, { password: ['password should not be empty'] }],
+        ['email is required', { password }, { email: ['email should not be empty'] }],
       ])('%s', async (_title, payload, errors) => {
-        const error = await client
-          .post('/auth/login', payload)
-          .catch((e) => e.response);
+        const error = await client.post('/auth/login', payload).catch((e) => e.response);
         expect(error.status).toBe(400);
         expect(error.data.message).toBe('Invalid data');
         expect(error.data.details).toEqual(errors);
@@ -197,9 +179,7 @@ describe('[Auth] - /auth', () => {
           })
           .catch((e) => e.response);
         expect(error.status).toBe(400);
-        expect(error.data.message).toBe(
-          'No active account found with the given credentials.',
-        );
+        expect(error.data.message).toBe('No active account found with the given credentials.');
       });
     });
   });

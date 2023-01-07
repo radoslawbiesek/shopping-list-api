@@ -26,16 +26,15 @@ describe('[Categories] - /category', () => {
   describe('CRUD', () => {
     describe('Create [POST /category]', () => {
       describe('validation', () => {
-        it.each([
-          ['name is required', {}, { name: ['name should not be empty'] }],
-        ])('%s', async (_title, payload, errors) => {
-          const error = await client
-            .post(endpoint, payload)
-            .catch((e) => e.response);
-          expect(error.status).toBe(400);
-          expect(error.data.message).toBe('Invalid data');
-          expect(error.data.details).toEqual(errors);
-        });
+        it.each([['name is required', {}, { name: ['name should not be empty'] }]])(
+          '%s',
+          async (_title, payload, errors) => {
+            const error = await client.post(endpoint, payload).catch((e) => e.response);
+            expect(error.status).toBe(400);
+            expect(error.data.message).toBe('Invalid data');
+            expect(error.data.details).toEqual(errors);
+          },
+        );
 
         it('name must be unique', async () => {
           const category = await mockCategory(user.user_id);

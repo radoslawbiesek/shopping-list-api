@@ -10,18 +10,11 @@ export const categoriesRouter = Router();
 categoriesRouter.post(
   '/',
   validationMiddleware(CreateCategoryDto),
-  async function createProductCategory(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async function createProductCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req as RequestWithUser;
       const createCategoryDto: CreateCategoryDto = req.body;
-      const category = await categoriesService.createCategory(
-        userId,
-        createCategoryDto,
-      );
+      const category = await categoriesService.createCategory(userId, createCategoryDto);
 
       res.json(category);
     } catch (error) {

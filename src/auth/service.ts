@@ -19,10 +19,7 @@ async function validatePassword(loginDto: LoginDto): Promise<User> {
   const isValid = user && (await bcrypt.compare(password, user.password));
 
   if (!isValid) {
-    throw new HttpError(
-      400,
-      'No active account found with the given credentials.',
-    );
+    throw new HttpError(400, 'No active account found with the given credentials.');
   }
 
   return user;

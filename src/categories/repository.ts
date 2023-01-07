@@ -9,13 +9,7 @@ export type Category = {
   created_on: Date;
 };
 
-async function _createCategory({
-  name,
-  created_by,
-}: {
-  name: string;
-  created_by: number;
-}) {
+async function _createCategory({ name, created_by }: { name: string; created_by: number }) {
   return pool.query(
     `
       INSERT INTO categories

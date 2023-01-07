@@ -9,9 +9,7 @@ export type User = {
 };
 
 async function findByEmail(email: string): Promise<User> {
-  const response = await pool.query(`SELECT * FROM users WHERE email=$1`, [
-    email,
-  ]);
+  const response = await pool.query(`SELECT * FROM users WHERE email=$1`, [email]);
 
   return response.rows[0];
 }
@@ -23,10 +21,10 @@ async function findByEmailOrUsername({
   username: string;
   email: string;
 }): Promise<User> {
-  const response = await pool.query(
-    `SELECT * FROM users WHERE username=$1 OR email=$2`,
-    [username, email],
-  );
+  const response = await pool.query(`SELECT * FROM users WHERE username=$1 OR email=$2`, [
+    username,
+    email,
+  ]);
 
   return response.rows[0];
 }

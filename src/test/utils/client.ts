@@ -10,9 +10,7 @@ export const client: AxiosInstance = axios.create({
   baseURL,
 });
 
-export async function createAuthenticatedClient(
-  user: User,
-): Promise<AxiosInstance> {
+export async function createAuthenticatedClient(user: User): Promise<AxiosInstance> {
   const { token } = await authService.createToken(user);
 
   return axios.create({

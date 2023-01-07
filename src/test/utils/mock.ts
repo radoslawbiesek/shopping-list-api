@@ -5,9 +5,7 @@ import { CreateCategoryDto } from '../../categories/dto';
 import { categoriesRepository, Category } from '../../categories/repository';
 import { CreateUserDto } from '../../users/dto';
 
-export function mockUser(
-  overrides: Partial<CreateUserDto> = {},
-): Promise<User> {
+export function mockUser(overrides: Partial<CreateUserDto> = {}): Promise<User> {
   const createUserDto = {
     email: faker.internet.email(),
     password: faker.internet.password(8),

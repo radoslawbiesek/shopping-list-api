@@ -1,11 +1,4 @@
-import {
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUrl,
-  MaxLength,
-} from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
 
 export class CreateCategoryDto {
   @MaxLength(25)
