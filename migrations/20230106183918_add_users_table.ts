@@ -5,6 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     CREATE TABLE IF NOT EXISTS users (
       id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       email VARCHAR(50) UNIQUE NOT NULL,
+      username VARCHAR(25) UNIQUE NOT NULL,
       password VARCHAR(200) NOT NULL,
       created_on TIMESTAMP NOT NULL
     )

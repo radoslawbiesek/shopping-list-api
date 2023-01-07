@@ -9,6 +9,7 @@ export function mockUser(
   const createUserDto = {
     email: faker.internet.email(),
     password: faker.internet.password(8),
+    username: faker.internet.userName(),
     ...overrides,
   };
 

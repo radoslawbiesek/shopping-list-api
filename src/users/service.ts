@@ -9,16 +9,24 @@ async function getByEmail(email: string): Promise<User> {
 }
 
 async function createUser(createUserDto: CreateUserDto): Promise<User> {
-  const { password, email } = createUserDto;
+  const { password, email, username } = createUserDto;
 
-  const existingUser = await getByEmail(email);
+  const existingUser = await usersRepository.findByEmailOrUsername({
+    email,
+    username,
+  });
   if (existingUser) {
-    throw new HttpError(400, 'User with given email already exists');
+    if (existingUser.email === email) {
+      throw new HttpError(400, 'User with given email already exists');
+    }
+
+    throw new HttpError(400, 'User with given username already exists');
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
   const user = await usersRepository.create({
     email,
+    username,
     password: hashedPassword,
   });
 
