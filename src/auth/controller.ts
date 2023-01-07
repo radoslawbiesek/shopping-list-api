@@ -15,7 +15,7 @@ authRouter.post(
     try {
       const createUserDto: CreateUserDto = req.body;
       const user = await usersService.createUser(createUserDto);
-      res.json({ id: user.id });
+      res.json({ id: user.user_id });
     } catch (error) {
       next(error);
     }

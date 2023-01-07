@@ -1,7 +1,7 @@
 import { pool } from '../database/pool';
 
 export type User = {
-  id: number;
+  user_id: number;
   username: string;
   email: string;
   password: string;

@@ -35,7 +35,7 @@ async function validateToken(token: string): Promise<TokenPayload> {
 }
 
 async function createToken(user: User) {
-  const payload: TokenPayload = { email: user.email, userId: user.id };
+  const payload: TokenPayload = { email: user.email, userId: user.user_id };
   const expiresIn = config.jwt.expiresIn;
   const token = jwt.sign(payload, config.jwt.secret, {
     expiresIn,
