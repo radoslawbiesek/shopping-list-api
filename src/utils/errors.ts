@@ -12,3 +12,23 @@ export class HttpError extends Error {
     this.details = details;
   }
 }
+
+export class BadRequestError extends HttpError {
+  constructor(message: string, details: JSONValue) {
+    super(400, message, details);
+  }
+}
+
+export class ValidationError extends BadRequestError {
+  constructor(details: Record<string, string[]>) {
+    super('Invalid data', details);
+  }
+}
+
+export function isDbError(value: unknown): value is Record<string, string> {
+  return value !== null && !Array.isArray(value) && typeof value === 'object';
+}
+
+export const DbErrorCode = {
+  UniqueViolation: '23505',
+};

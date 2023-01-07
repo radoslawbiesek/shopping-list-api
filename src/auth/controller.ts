@@ -31,7 +31,7 @@ authRouter.post(
       const user = await authService.validatePassword(loginDto);
       const { token, expiresIn } = await authService.createToken(user);
 
-      res.send({ token, expiresIn });
+      res.json({ token, expiresIn });
     } catch (error) {
       next(error);
     }

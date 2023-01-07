@@ -1,4 +1,5 @@
 import { pool } from '../database/pool';
+import { DbErrorCode, isDbError, ValidationError } from '../utils/errors';
 
 export type User = {
   user_id: number;
@@ -30,18 +31,38 @@ async function findByEmailOrUsername({
   return response.rows[0];
 }
 
-async function create(data: {
+async function create({
+  email,
+  password,
+  username,
+}: {
+  username: string;
   email: string;
   password: string;
-  username: string;
 }): Promise<User> {
-  const { email, password, username } = data;
-  const response = await pool.query(
-    `INSERT INTO users (email, username, password, created_on) VALUES ($1, $2, $3, NOW()) RETURNING *`,
-    [email, username, password],
-  );
+  try {
+    const response = await pool.query(
+      `INSERT INTO users (email, username, password, created_on) VALUES ($1, $2, $3, NOW()) RETURNING *`,
+      [email, username, password],
+    );
 
-  return response.rows[0];
+    return response.rows[0];
+  } catch (error: unknown) {
+    if (isDbError(error) && error.code === DbErrorCode.UniqueViolation) {
+      const details: Record<string, string[]> = {};
+      if (error.constraint === 'users_username_key') {
+        details.username = ['user with given username already exists'];
+      }
+
+      if (error.constraint === 'users_email_key') {
+        details.email = ['user with given email already exists'];
+      }
+
+      throw new ValidationError(details);
+    }
+
+    throw error;
+  }
 }
 
 export const usersRepository = {

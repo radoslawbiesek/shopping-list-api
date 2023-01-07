@@ -1,10 +1,11 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { Server } from 'http';
 
-import { authRouter } from './auth/controller';
-import { authenticate } from './auth/middleware';
 import { config } from './config';
 import { errorMiddleware } from './middleware/error';
+import { authenticate } from './auth/middleware';
+import { authRouter } from './auth/controller';
+import { categoriesRouter } from './categories/controller';
 
 export function startServer(): Server {
   const app = express();
@@ -16,9 +17,7 @@ export function startServer(): Server {
 
   // Authenticated routes
   app.use(authenticate);
-  app.get('/', (req: Request, res: Response) => {
-    res.json('authenticated');
-  });
+  app.use('/category', categoriesRouter);
 
   app.use(errorMiddleware);
 

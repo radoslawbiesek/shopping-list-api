@@ -7,7 +7,7 @@
     "build": "rimraf ./dist && tsc",
     "start": "npm run build && node dist/index.js",
     "pretest": "docker-compose up -d test-db && NODE_ENV=test npm run migrate",
-    "test": "jest",
+    "test": "jest --runInBand",
     "posttest": "docker-compose stop test-db && docker-compose rm -f test-db",
     "db": "docker-compose up -d db",
     "migrate": "knex migrate:latest",

@@ -144,7 +144,10 @@ describe('[Auth] - /auth', () => {
           .post('/auth/register', { ...data, email: user.email })
           .catch((e) => e.response);
         expect(error.status).toBe(400);
-        expect(error.data.message).toBe('User with given email already exists');
+        expect(error.data.message).toBe('Invalid data');
+        expect(error.data.details).toEqual({
+          email: ['user with given email already exists'],
+        });
       });
 
       it('username must be unique', async () => {
@@ -153,9 +156,10 @@ describe('[Auth] - /auth', () => {
           .post('/auth/register', { ...data, username: user.username })
           .catch((e) => e.response);
         expect(error.status).toBe(400);
-        expect(error.data.message).toBe(
-          'User with given username already exists',
-        );
+        expect(error.data.message).toBe('Invalid data');
+        expect(error.data.details).toEqual({
+          username: ['user with given username already exists'],
+        });
       });
     });
   });
