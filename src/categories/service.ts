@@ -8,4 +8,8 @@ async function createCategory(userId: number, createCategoryDto: CreateCategoryD
   });
 }
 
-export const categoriesService = { createCategory };
+async function getAllCategories(userId: number) {
+  return categoriesRepository.getAllCategories(userId);
+}
+
+export const categoriesService = { createCategory, getAllCategories };

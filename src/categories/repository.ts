@@ -9,6 +9,22 @@ export type Category = {
   created_on: Date;
 };
 
+async function getAllCategories(userId: number): Promise<Category[]> {
+  const result = await pool.query(
+    `
+      SELECT
+        *
+      FROM
+        categories
+      WHERE
+        created_by = $1
+    `,
+    [userId],
+  );
+
+  return result.rows;
+}
+
 async function _createCategory({ name, created_by }: { name: string; created_by: number }) {
   return pool.query(
     `
@@ -30,7 +46,7 @@ async function _createSubCategory({
 }: {
   name: string;
   created_by: number;
-  parent_id: number | null;
+  parent_id: number;
 }) {
   return pool.query(
     `
@@ -67,9 +83,12 @@ async function createCategory({
         name: ['name must be unique'],
       });
     }
+
+    throw error;
   }
 }
 
 export const categoriesRepository = {
+  getAllCategories,
   createCategory,
 };

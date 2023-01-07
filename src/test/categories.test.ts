@@ -4,8 +4,9 @@ import { AxiosInstance } from 'axios';
 
 import { startServer } from '../server';
 import { createAuthenticatedClient } from './utils/client';
-import { mockCategory, mockUser } from './utils/mock';
+import { deleteMockedCategories, mockCategory, mockUser } from './utils/mock';
 import { User } from '../users/repository';
+import { Category } from '../categories/repository';
 
 let server: Server;
 let user: User;
@@ -17,6 +18,10 @@ beforeAll(async () => {
   client = await createAuthenticatedClient(user);
 });
 
+afterEach(async () => {
+  await deleteMockedCategories();
+});
+
 afterAll(() => {
   server.close();
 });
@@ -24,6 +29,16 @@ afterAll(() => {
 describe('[Categories] - /category', () => {
   const endpoint = '/category';
   describe('CRUD', () => {
+    describe('Get all [GET /category]', () => {
+      it('listing', async () => {
+        const names = ['test1', 'test2', 'test3'];
+        await Promise.all(names.map((name) => mockCategory(user.user_id, { name })));
+        const response = await client.get(endpoint);
+        expect(response.status).toBe(200);
+        expect(response.data.length).toBe(3);
+        expect(response.data.map((c: Category) => c.name)).toEqual(names);
+      });
+    });
     describe('Create [POST /category]', () => {
       describe('validation', () => {
         it.each([['name is required', {}, { name: ['name should not be empty'] }]])(

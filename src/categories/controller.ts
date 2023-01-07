@@ -7,10 +7,23 @@ import { categoriesService } from './service';
 
 export const categoriesRouter = Router();
 
+categoriesRouter.get(
+  '/',
+  async function getAllCategories(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req as RequestWithUser;
+      const categories = await categoriesService.getAllCategories(userId);
+      res.json(categories);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 categoriesRouter.post(
   '/',
   validationMiddleware(CreateCategoryDto),
-  async function createProductCategory(req: Request, res: Response, next: NextFunction) {
+  async function createCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req as RequestWithUser;
       const createCategoryDto: CreateCategoryDto = req.body;

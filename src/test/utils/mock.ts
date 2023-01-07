@@ -4,6 +4,7 @@ import { User, usersRepository } from '../../users/repository';
 import { CreateCategoryDto } from '../../categories/dto';
 import { categoriesRepository, Category } from '../../categories/repository';
 import { CreateUserDto } from '../../users/dto';
+import { pool } from '../../database/pool';
 
 export function mockUser(overrides: Partial<CreateUserDto> = {}): Promise<User> {
   const createUserDto = {
@@ -28,4 +29,8 @@ export function mockCategory(
   };
 
   return categoriesRepository.createCategory(createCategoryDto);
+}
+
+export async function deleteMockedCategories() {
+  await pool.query(`DELETE FROM categories`);
 }
