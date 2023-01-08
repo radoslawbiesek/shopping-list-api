@@ -31,4 +31,5 @@ export function isDbError(value: unknown): value is Record<string, string> {
 
 export const DbErrorCode = {
   UniqueViolation: '23505',
+  ForeignKeyViolation: '23503',
 };

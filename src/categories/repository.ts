@@ -71,17 +71,23 @@ async function createCategory({
   parent_id: number | null;
 }) {
   try {
-    const response =
+    const result =
       parent_id !== null
         ? await _createSubCategory({ name, parent_id, created_by })
         : await _createCategory({ name, created_by });
 
-    return response.rows[0];
+    return result.rows[0];
   } catch (error: unknown) {
-    if (isDbError(error) && error.code === DbErrorCode.UniqueViolation) {
-      throw new ValidationError({
-        name: ['name must be unique'],
-      });
+    if (isDbError(error)) {
+      if (error.code === DbErrorCode.UniqueViolation) {
+        throw new ValidationError({
+          name: ['name must be unique'],
+        });
+      } else if (error.code === DbErrorCode.ForeignKeyViolation) {
+        throw new ValidationError({
+          parent_id: ['category with given id does not exist'],
+        });
+      }
     }
 
     throw error;

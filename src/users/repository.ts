@@ -14,21 +14,6 @@ async function findByEmail(email: string): Promise<User> {
   return response.rows[0];
 }
 
-async function findByEmailOrUsername({
-  username,
-  email,
-}: {
-  username: string;
-  email: string;
-}): Promise<User> {
-  const response = await pool.query(`SELECT * FROM users WHERE username=$1 OR email=$2`, [
-    username,
-    email,
-  ]);
-
-  return response.rows[0];
-}
-
 async function create({
   email,
   password,
@@ -65,6 +50,5 @@ async function create({
 
 export const usersRepository = {
   findByEmail,
-  findByEmailOrUsername,
   create,
 };

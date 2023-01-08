@@ -78,7 +78,20 @@ describe('[Categories] - /category', () => {
             name: ['name must be unique'],
           });
         });
+
+        it('parent_id must be valid category id', async () => {
+          const error = await client
+            .post(endpoint, { name: faker.datatype.string(), parent_id: faker.datatype.number() })
+            .catch((e) => e.response);
+
+          expect(error.status).toBe(400);
+          expect(error.data.message).toBe('Invalid data');
+          expect(error.data.details).toEqual({
+            parent_id: ['category with given id does not exist'],
+          });
+        });
       });
+
       it('create category', async () => {
         const name = faker.datatype.string();
         const response = await client.post(endpoint, { name });
