@@ -1,5 +1,6 @@
 import { pool } from '../database/pool';
 import { DbErrorCode, isDbError, ValidationError } from '../utils/errors';
+import { ProductsQueryParams } from './query-params';
 
 export type Product = {
   id: number;
@@ -53,36 +54,50 @@ async function createProduct({
   }
 }
 
-async function getProductsBySearch(userId: number, search: string): Promise<Product[]> {
-  const result = await pool.query(
-    `
-      SELECT 
-        *
-      FROM 
-        products
-      WHERE
-        created_by = $1 AND CONCAT(name, decription) ILIKE '%$2%';
-    `,
-    [userId, search],
-  );
+export function _createGetProductsQuery(
+  userId: number,
+  params: ProductsQueryParams,
+): [string, Array<string | number>] {
+  let query = `SELECT * FROM products WHERE created_by = $1`;
+  const values: Array<string | number> = [userId];
+
+  if (params.search) {
+    values.push(`%${params.search}%`);
+    query += ` AND CONCAT(name, description) ILIKE $${values.length}`;
+  }
+
+  if (params.category_id) {
+    values.push(params.category_id);
+    query += ` AND category_id = $${values.length}`;
+  }
+
+  if (params.order_by) {
+    if (params.order_by.startsWith('-')) {
+      values.push(`${params.order_by.substring(1)} DESC`);
+    } else {
+      values.push(`${params.order_by} ASC`);
+    }
+    query += ` ORDER BY $${values.length}`;
+  }
+
+  if (params.limit) {
+    values.push(params.limit);
+    query += ` LIMIT $${values.length}`;
+  }
+
+  if (params.offset) {
+    values.push(params.offset);
+    query += ` OFFSET $${values.length}`;
+  }
+
+  return [query, values];
+}
+
+async function getProducts(userId: number, params: ProductsQueryParams): Promise<Product[]> {
+  const [query, values] = _createGetProductsQuery(userId, params);
+  const result = await pool.query(query, values);
 
   return result.rows;
 }
 
-async function getProductsByCategory(userId: number, categoryId: number): Promise<Product[]> {
-  const result = await pool.query(
-    `
-      SELECT
-        *
-      FROM
-        products
-      WHERE
-        created_by = $1 AND category_id = $2;
-    `,
-    [userId, categoryId],
-  );
-
-  return result.rows;
-}
-
-export const productsRepository = { createProduct, getProductsBySearch, getProductsByCategory };
+export const productsRepository = { createProduct, getProducts };

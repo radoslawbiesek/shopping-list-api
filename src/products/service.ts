@@ -1,4 +1,5 @@
 import { CreateProductDto } from './dto';
+import { ProductsQueryParams } from './query-params';
 import { productsRepository, Product } from './repository';
 
 async function createProduct(userId: number, createProductDto: CreateProductDto): Promise<Product> {
@@ -8,4 +9,8 @@ async function createProduct(userId: number, createProductDto: CreateProductDto)
   });
 }
 
-export const productsService = { createProduct };
+async function getProducts(userId: number, queryParams: ProductsQueryParams) {
+  return productsRepository.getProducts(userId, queryParams);
+}
+
+export const productsService = { createProduct, getProducts };

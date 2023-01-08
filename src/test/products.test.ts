@@ -68,6 +68,22 @@ describe('[Products] - /product', () => {
           name: ['name must be unique'],
         });
       });
+
+      it('image must be a valid url', async () => {
+        const error = await client
+          .post(endpoint, {
+            name: faker.datatype.string(),
+            category_id: category.category_id,
+            image: faker.datatype.string(),
+          })
+          .catch((e) => e.response);
+
+        expect(error.status).toBe(400);
+        expect(error.data.message).toBe('Invalid data');
+        expect(error.data.details).toEqual({
+          image: ['image must be a URL address'],
+        });
+      });
     });
   });
 });
