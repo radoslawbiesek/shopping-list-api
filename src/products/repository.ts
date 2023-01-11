@@ -1,10 +1,10 @@
 import { pool } from '../database/pool';
 import { DbErrorCode, isDbError, ValidationError } from '../utils/errors';
 import { GetAllResponse } from '../utils/types';
-import { ProductsQueryParams } from './query-params';
+import { GetAllProductsQuery } from './dto';
 
 export type Product = {
-  id: number;
+  product_id: number;
   name: string;
   description: string;
   image: string;
@@ -59,7 +59,7 @@ async function create({
 
 async function getAll(
   userId: number,
-  params: ProductsQueryParams,
+  params: GetAllProductsQuery,
 ): Promise<GetAllResponse<Product>> {
   const [query, values] = _createGetProductsQuery(userId, params);
   const result = await pool.query(query, values);
@@ -71,7 +71,7 @@ async function getAll(
 
 export function _createGetProductsQuery(
   userId: number,
-  params: ProductsQueryParams,
+  params: GetAllProductsQuery,
 ): [string, Array<string | number>] {
   let query = `SELECT * FROM products WHERE created_by = $1`;
   const values: Array<string | number> = [userId];

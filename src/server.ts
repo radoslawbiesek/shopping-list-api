@@ -7,6 +7,7 @@ import { authenticate } from './auth/middleware';
 import { authRouter } from './auth/controller';
 import { categoriesRouter } from './categories/controller';
 import { productsRouter } from './products/controller';
+import { listsRouter } from './lists/controller';
 
 export function startServer(): Server {
   const app = express();
@@ -20,6 +21,7 @@ export function startServer(): Server {
   app.use(authenticate);
   app.use('/category', categoriesRouter);
   app.use('/product', productsRouter);
+  app.use('/lists', listsRouter);
 
   app.use(errorMiddleware);
 

@@ -1,11 +1,11 @@
-import { ProductsQueryParams } from './query-params';
+import { GetAllProductsQuery } from './dto';
 import { _createGetProductsQuery } from './repository';
 
 const USER_ID = 1;
 
 describe('_createGetProductsQuery helper function', () => {
   it('creates a valid sql query for all possible params', () => {
-    const params: ProductsQueryParams = {
+    const params: GetAllProductsQuery = {
       search: 'test',
       category_id: '2',
       order_by: '-name',
@@ -27,7 +27,7 @@ describe('_createGetProductsQuery helper function', () => {
   });
 
   it('creates a valid sql query for selected params', () => {
-    const params: ProductsQueryParams = {
+    const params: GetAllProductsQuery = {
       category_id: '2',
       order_by: 'name',
       limit: '10',
@@ -40,7 +40,7 @@ describe('_createGetProductsQuery helper function', () => {
   });
 
   it('creates a valid sql query for search only', () => {
-    const params: ProductsQueryParams = {
+    const params: GetAllProductsQuery = {
       search: 'test',
     };
     const [query, values] = _createGetProductsQuery(USER_ID, params);
