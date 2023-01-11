@@ -8,7 +8,12 @@ export type User = {
   password: string;
 };
 
-async function findByEmail(email: string): Promise<User> {
+export const usersRepository = {
+  getByEmail,
+  create,
+};
+
+async function getByEmail(email: string): Promise<User> {
   const response = await pool.query(`SELECT * FROM users WHERE email=$1`, [email]);
 
   return response.rows[0];
@@ -47,8 +52,3 @@ async function create({
     throw error;
   }
 }
-
-export const usersRepository = {
-  findByEmail,
-  create,
-};

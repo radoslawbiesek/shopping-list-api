@@ -14,7 +14,8 @@ authRouter.post(
   async function register(req: Request, res: Response, next: NextFunction) {
     try {
       const createUserDto: CreateUserDto = req.body;
-      const user = await usersService.createUser(createUserDto);
+      const user = await usersService.create(createUserDto);
+
       res.json({ id: user.user_id });
     } catch (error) {
       next(error);

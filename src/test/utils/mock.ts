@@ -30,7 +30,7 @@ export function mockCategory(
     ...overrides,
   };
 
-  return categoriesRepository.createCategory(categoryData);
+  return categoriesRepository.create(categoryData);
 }
 
 export async function mockProduct(userId: number, overrides: Partial<CreateProductDto> = {}) {
@@ -44,7 +44,7 @@ export async function mockProduct(userId: number, overrides: Partial<CreateProdu
     ...overrides,
   };
 
-  return productsRepository.createProduct(productData);
+  return productsRepository.create(productData);
 }
 
 export async function clearMockedCategories() {

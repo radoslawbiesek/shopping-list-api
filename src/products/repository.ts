@@ -1,5 +1,6 @@
 import { pool } from '../database/pool';
 import { DbErrorCode, isDbError, ValidationError } from '../utils/errors';
+import { GetAllResponse } from '../utils/types';
 import { ProductsQueryParams } from './query-params';
 
 export type Product = {
@@ -12,7 +13,9 @@ export type Product = {
   created_on: Date;
 };
 
-async function createProduct({
+export const productsRepository = { create, getAll };
+
+async function create({
   created_by,
   name,
   description,
@@ -28,12 +31,12 @@ async function createProduct({
   try {
     const result = await pool.query(
       `
-      INSERT INTO products
-        (created_on, created_by, name, description, image, category_id)
-      VALUES
-        (NOW(), $1, $2, $3, $4, $5)
-      RETURNING *;
-    `,
+        INSERT INTO products
+          (created_on, created_by, name, description, image, category_id)
+        VALUES
+          (NOW(), $1, $2, $3, $4, $5)
+        RETURNING *;
+      `,
       [created_by, name, description, image, category_id],
     );
     return result.rows[0];
@@ -52,6 +55,18 @@ async function createProduct({
 
     throw error;
   }
+}
+
+async function getAll(
+  userId: number,
+  params: ProductsQueryParams,
+): Promise<GetAllResponse<Product>> {
+  const [query, values] = _createGetProductsQuery(userId, params);
+  const result = await pool.query(query, values);
+
+  return {
+    results: result.rows as Product[],
+  };
 }
 
 export function _createGetProductsQuery(
@@ -92,12 +107,3 @@ export function _createGetProductsQuery(
 
   return [query, values];
 }
-
-async function getProducts(userId: number, params: ProductsQueryParams): Promise<Product[]> {
-  const [query, values] = _createGetProductsQuery(userId, params);
-  const result = await pool.query(query, values);
-
-  return result.rows;
-}
-
-export const productsRepository = { createProduct, getProducts };

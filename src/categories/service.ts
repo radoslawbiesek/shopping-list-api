@@ -1,15 +1,15 @@
 import { CreateCategoryDto } from './dto';
 import { categoriesRepository } from './repository';
 
-async function createCategory(userId: number, createCategoryDto: CreateCategoryDto) {
-  return categoriesRepository.createCategory({
+export const categoriesService = { create, getAll };
+
+async function create(userId: number, createCategoryDto: CreateCategoryDto) {
+  return categoriesRepository.create({
     created_by: userId,
     ...createCategoryDto,
   });
 }
 
-async function getAllCategories(userId: number) {
-  return categoriesRepository.getAllCategories(userId);
+async function getAll(userId: number) {
+  return categoriesRepository.getAll(userId);
 }
-
-export const categoriesService = { createCategory, getAllCategories };

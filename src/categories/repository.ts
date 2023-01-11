@@ -1,5 +1,6 @@
 import { pool } from '../database/pool';
 import { ValidationError, DbErrorCode, isDbError } from '../utils/errors';
+import { GetAllResponse } from '../utils/types';
 
 export type Category = {
   category_id: number;
@@ -9,7 +10,12 @@ export type Category = {
   created_on: Date;
 };
 
-async function getAllCategories(userId: number): Promise<Category[]> {
+export const categoriesRepository = {
+  getAll,
+  create,
+};
+
+async function getAll(userId: number): Promise<GetAllResponse<Category>> {
   const result = await pool.query(
     `
       SELECT
@@ -22,10 +28,12 @@ async function getAllCategories(userId: number): Promise<Category[]> {
     [userId],
   );
 
-  return result.rows;
+  return {
+    results: result.rows,
+  };
 }
 
-async function _createCategory({ name, created_by }: { name: string; created_by: number }) {
+async function _create({ name, created_by }: { name: string; created_by: number }) {
   return pool.query(
     `
       INSERT INTO categories
@@ -61,7 +69,7 @@ async function _createSubCategory({
   );
 }
 
-async function createCategory({
+async function create({
   name,
   parent_id,
   created_by,
@@ -74,7 +82,7 @@ async function createCategory({
     const result =
       parent_id !== null
         ? await _createSubCategory({ name, parent_id, created_by })
-        : await _createCategory({ name, created_by });
+        : await _create({ name, created_by });
 
     return result.rows[0];
   } catch (error: unknown) {
@@ -93,8 +101,3 @@ async function createCategory({
     throw error;
   }
 }
-
-export const categoriesRepository = {
-  getAllCategories,
-  createCategory,
-};

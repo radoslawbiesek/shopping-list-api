@@ -3,11 +3,16 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto';
 import { usersRepository, User } from './repository';
 
+export const usersService = {
+  getByEmail,
+  create,
+};
+
 async function getByEmail(email: string): Promise<User> {
-  return usersRepository.findByEmail(email);
+  return usersRepository.getByEmail(email);
 }
 
-async function createUser(createUserDto: CreateUserDto): Promise<User> {
+async function create(createUserDto: CreateUserDto): Promise<User> {
   const { password, email, username } = createUserDto;
 
   const hashedPassword = await bcrypt.hash(password, 12);
@@ -19,8 +24,3 @@ async function createUser(createUserDto: CreateUserDto): Promise<User> {
 
   return user;
 }
-
-export const usersService = {
-  getByEmail,
-  createUser,
-};

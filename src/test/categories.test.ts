@@ -36,8 +36,10 @@ describe('[Categories] - /category', () => {
         await Promise.all(names.map((name) => mockCategory(user.user_id, { name })));
         const response = await client.get(endpoint);
         expect(response.status).toBe(200);
-        expect(response.data.length).toBe(3);
-        expect(response.data.map((c: Category) => c.name)).toEqual(expect.arrayContaining(names));
+        expect(response.data.results.length).toBe(3);
+        expect(response.data.results.map((c: Category) => c.name)).toEqual(
+          expect.arrayContaining(names),
+        );
       });
 
       it('listing only user categories', async () => {
@@ -50,8 +52,10 @@ describe('[Categories] - /category', () => {
 
         const response = await client.get(endpoint);
         expect(response.status).toBe(200);
-        expect(response.data.length).toBe(3);
-        expect(response.data.map((c: Category) => c.name)).toEqual(expect.arrayContaining(names));
+        expect(response.data.results.length).toBe(3);
+        expect(response.data.results.map((c: Category) => c.name)).toEqual(
+          expect.arrayContaining(names),
+        );
       });
     });
     describe('Create [POST /category]', () => {

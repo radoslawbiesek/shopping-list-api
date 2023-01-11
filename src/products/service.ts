@@ -2,15 +2,15 @@ import { CreateProductDto } from './dto';
 import { ProductsQueryParams } from './query-params';
 import { productsRepository, Product } from './repository';
 
-async function createProduct(userId: number, createProductDto: CreateProductDto): Promise<Product> {
-  return productsRepository.createProduct({
+export const productsService = { getAll, create };
+
+async function create(userId: number, createProductDto: CreateProductDto): Promise<Product> {
+  return productsRepository.create({
     created_by: userId,
     ...createProductDto,
   });
 }
 
-async function getProducts(userId: number, queryParams: ProductsQueryParams) {
-  return productsRepository.getProducts(userId, queryParams);
+async function getAll(userId: number, queryParams: ProductsQueryParams) {
+  return productsRepository.getAll(userId, queryParams);
 }
-
-export const productsService = { createProduct, getProducts };

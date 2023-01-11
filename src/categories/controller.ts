@@ -7,31 +7,29 @@ import { categoriesService } from './service';
 
 export const categoriesRouter = Router();
 
-categoriesRouter.get(
-  '/',
-  async function getAllCategories(req: Request, res: Response, next: NextFunction) {
+categoriesRouter
+  .route('/')
+  .get(async function getAllCategories(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req as RequestWithUser;
-      const categories = await categoriesService.getAllCategories(userId);
+      const categories = await categoriesService.getAll(userId);
+
       res.json(categories);
     } catch (error) {
       next(error);
     }
-  },
-);
+  })
+  .post(
+    validationMiddleware(CreateCategoryDto),
+    async function createCategory(req: Request, res: Response, next: NextFunction) {
+      try {
+        const { userId } = req as RequestWithUser;
+        const createCategoryDto: CreateCategoryDto = req.body;
+        const category = await categoriesService.create(userId, createCategoryDto);
 
-categoriesRouter.post(
-  '/',
-  validationMiddleware(CreateCategoryDto),
-  async function createCategory(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { userId } = req as RequestWithUser;
-      const createCategoryDto: CreateCategoryDto = req.body;
-      const category = await categoriesService.createCategory(userId, createCategoryDto);
-
-      res.json(category);
-    } catch (error) {
-      next(error);
-    }
-  },
-);
+        res.json(category);
+      } catch (error) {
+        next(error);
+      }
+    },
+  );
