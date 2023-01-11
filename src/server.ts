@@ -21,7 +21,7 @@ export function startServer(): Server {
   app.use(authenticate);
   app.use('/category', categoriesRouter);
   app.use('/product', productsRouter);
-  app.use('/lists', listsRouter);
+  app.use('/list', listsRouter);
 
   app.use(errorMiddleware);
 

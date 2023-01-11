@@ -19,6 +19,12 @@ export class BadRequestError extends HttpError {
   }
 }
 
+export class NotFoundError extends HttpError {
+  constructor(message = 'Not found') {
+    super(404, message);
+  }
+}
+
 export class ValidationError extends BadRequestError {
   constructor(details: Record<string, string[]>) {
     super('Invalid data', details);

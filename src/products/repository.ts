@@ -1,3 +1,4 @@
+import { PoolClient } from 'pg';
 import { pool } from '../database/pool';
 import { DbErrorCode, isDbError, ValidationError } from '../utils/errors';
 import { GetAllResponse } from '../utils/types';
@@ -13,7 +14,7 @@ export type Product = {
   created_on: Date;
 };
 
-export const productsRepository = { create, getAll };
+export const productsRepository = { create, getAll, _updateLastUsed };
 
 async function create({
   created_by,
@@ -67,6 +68,20 @@ async function getAll(
   return {
     results: result.rows as Product[],
   };
+}
+
+async function _updateLastUsed(userId: number, productId: number, client: PoolClient) {
+  return client.query(
+    `
+    UPDATE
+      products
+    SET
+      last_used = NOW()
+    WHERE
+      created_by = $1 AND product_id = $2;
+  `,
+    [userId, productId],
+  );
 }
 
 export function _createGetProductsQuery(

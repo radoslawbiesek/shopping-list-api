@@ -6,7 +6,7 @@ import { ValidationError } from '../utils/errors';
 
 export function validationMiddleware(
   type: { new (): object },
-  field: 'body' | 'query' = 'body',
+  field: 'body' | 'query' | 'params' = 'body',
 ): RequestHandler {
   return async function (req: Request, res: Response, next: NextFunction) {
     const errors = await validate(plainToInstance(type, req[field]), {

@@ -26,9 +26,11 @@ export async function up(knex: Knex): Promise<void> {
       product_id INTEGER REFERENCES products(product_id) ON DELETE CASCADE,
       is_checked BOOLEAN DEFAULT false,
       is_high_priority BOOLEAN DEFAULT false,
+      amount INTEGER DEFAULT 1,
       created_by INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
       created_on TIMESTAMP NOT NULL,
       updated_on TIMESTAMP
+      UNIQUE(list_id, product_id)
     );
   `);
 }
