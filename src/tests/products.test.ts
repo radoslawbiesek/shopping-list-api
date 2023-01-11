@@ -31,6 +31,7 @@ afterAll(async () => {
 
 describe('[Products] - /product', () => {
   const endpoint = '/product';
+
   describe('Create [POST /product]', () => {
     describe('validation', () => {
       it.each([
